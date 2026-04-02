@@ -7,6 +7,7 @@ const defaults: SettingsState = {
   dataSource: "mock",
   pollingIntervalSec: 10,
   timezone: "Asia/Tokyo",
+  locale: "ja",
   theme: "dark",
   animationsEnabled: true,
   notificationsEnabled: true,

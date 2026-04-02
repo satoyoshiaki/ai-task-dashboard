@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, Clock3 } from "lucide-react";
+import { getUsageStatusLabel, useT } from "@/lib/i18n";
 import { UsageStat } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { formatClock } from "@/lib/utils/timeUtils";
@@ -36,8 +37,10 @@ const ProgressRing = ({ value, stroke }: { value: number; stroke: string }) => {
 
 export const UsageCard = ({ stat }: { stat: UsageStat }) => {
   const timezone = useSettingsStore((state) => state.timezone);
+  const locale = useSettingsStore((state) => state.locale);
   const stroke = stat.provider === "claude-code" ? "#a78bfa" : "#38bdf8";
-  const nextReset = stat.resetAt ? formatClock(stat.resetAt, timezone) : "Unknown";
+  const nextReset = stat.resetAt ? formatClock(stat.resetAt, timezone, locale) : getUsageStatusLabel(locale, "unknown");
+  const t = useT();
 
   return (
     <Card className={`relative overflow-hidden bg-gradient-to-br ${providerAccent(stat.provider)}`}>
@@ -45,26 +48,26 @@ export const UsageCard = ({ stat }: { stat: UsageStat }) => {
       <div className="relative flex items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">{providerLabel(stat.provider)}</p>
-          <h3 className="mt-2 text-xl font-semibold">Usage Window</h3>
+          <h3 className="mt-2 text-xl font-semibold">{t("usage.title")}</h3>
           <div className="mt-3">
-            <StatusBadge label={stat.status} />
+            <StatusBadge status={stat.status} />
           </div>
         </div>
         <ProgressRing value={stat.sessionUsedPercent} stroke={stroke} />
       </div>
       <div className="mt-5 grid gap-3 text-sm text-zinc-300 sm:grid-cols-2">
         <div className="rounded-2xl border border-white/10 bg-black/10 p-3">
-          <p className="text-zinc-500">Session</p>
+          <p className="text-zinc-500">{t("usage.session")}</p>
           <p className="mt-1 text-lg font-semibold text-white">{formatPercent(stat.sessionUsedPercent)}</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-black/10 p-3">
-          <p className="text-zinc-500">Period</p>
+          <p className="text-zinc-500">{t("usage.period")}</p>
           <p className="mt-1 text-lg font-semibold text-white">{formatPercent(stat.periodUsedPercent)}</p>
         </div>
       </div>
       <div className="mt-4 flex items-center justify-between text-sm text-zinc-300">
-        <span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4" />Next reset: {nextReset}</span>
-        {stat.status === "limit-reached" ? <span className="inline-flex items-center gap-2 text-rose-300"><AlertTriangle className="h-4 w-4" />Blocked</span> : <span>{formatPercent(stat.remainingPercent)} left</span>}
+        <span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4" />{t("usage.nextReset")} {nextReset}</span>
+        {stat.status === "limit-reached" ? <span className="inline-flex items-center gap-2 text-rose-300"><AlertTriangle className="h-4 w-4" />{t("task.blocked")}</span> : <span>{formatPercent(stat.remainingPercent)} {t("usage.left")}</span>}
       </div>
     </Card>
   );

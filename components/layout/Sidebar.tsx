@@ -3,23 +3,25 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, ListTodo, Settings } from "lucide-react";
+import { TranslationKey, useT } from "@/lib/i18n";
 import { cn } from "@/lib/utils/formatters";
 
 const nav = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/tasks", label: "Tasks", icon: ListTodo },
-  { href: "/settings", label: "Settings", icon: Settings }
-];
+  { href: "/", key: "nav.dashboard", icon: LayoutDashboard },
+  { href: "/tasks", key: "nav.tasks", icon: ListTodo },
+  { href: "/settings", key: "nav.settings", icon: Settings }
+] as const satisfies ReadonlyArray<{ href: string; key: TranslationKey; icon: typeof LayoutDashboard }>;
 
 export const Sidebar = () => {
   const pathname = usePathname();
+  const t = useT();
 
   return (
     <aside className="glass-card sticky top-4 hidden h-[calc(100vh-2rem)] w-72 rounded-[32px] p-5 lg:block">
       <div>
-        <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">AI Ops</p>
-        <h2 className="mt-3 text-2xl font-semibold">Task Dashboard</h2>
-        <p className="mt-2 text-sm text-zinc-400">Claude Code + Codex monitoring in one place.</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">{t("dashboard.aiOps")}</p>
+        <h2 className="mt-3 text-2xl font-semibold">{t("dashboard.title")}</h2>
+        <p className="mt-2 text-sm text-zinc-400">{t("dashboard.subtitle")}</p>
       </div>
       <nav className="mt-10 space-y-2">
         {nav.map((item) => {
@@ -35,7 +37,7 @@ export const Sidebar = () => {
               )}
             >
               <Icon className="h-4 w-4" />
-              {item.label}
+              {t(item.key)}
             </Link>
           );
         })}

@@ -1,4 +1,5 @@
 export type Provider = "claude-code" | "codex";
+export type Locale = "ja" | "en";
 export type UsageStatus = "normal" | "warning" | "limit-reached" | "unknown";
 export type TaskStatus =
   | "running"
@@ -102,6 +103,7 @@ export interface SettingsState {
   dataSource: DataSource;
   pollingIntervalSec: number;
   timezone: string;
+  locale: Locale;
   theme: "dark" | "light";
   animationsEnabled: boolean;
   notificationsEnabled: boolean;

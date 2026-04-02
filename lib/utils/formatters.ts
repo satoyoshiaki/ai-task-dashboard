@@ -1,5 +1,6 @@
 import { formatDistanceToNowStrict } from "date-fns";
-import { Provider, TaskStatus, UsageStatus } from "@/lib/types";
+import { enUS, ja } from "date-fns/locale";
+import { Locale, Provider, TaskStatus, UsageStatus } from "@/lib/types";
 
 export const cn = (...classes: Array<string | false | null | undefined>) =>
   classes.filter(Boolean).join(" ");
@@ -36,12 +37,12 @@ export const statusTone = (status: TaskStatus | UsageStatus) => {
 export const formatPercent = (value: number) => `${Math.round(value)}%`;
 export const formatUsage = (value: number) => `${value.toLocaleString()} units`;
 
-export const formatRelativeTime = (value: Date) =>
-  formatDistanceToNowStrict(value, { addSuffix: true });
+export const formatRelativeTime = (value: Date, locale: Locale = "en") =>
+  formatDistanceToNowStrict(value, { addSuffix: true, locale: locale === "ja" ? ja : enUS });
 
-export const formatRemaining = (seconds: number | null) => {
+export const formatRemaining = (seconds: number | null, unknownLabel = "Unknown") => {
   if (seconds === null) {
-    return "Unknown";
+    return unknownLabel;
   }
   const mins = Math.floor(seconds / 60);
   const hrs = Math.floor(mins / 60);

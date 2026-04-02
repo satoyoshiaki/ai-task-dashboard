@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
+import { useT } from "@/lib/i18n";
 import { TaskDetail } from "@/components/tasks/TaskDetail";
 import { useDashboardStore } from "@/stores/dashboardStore";
 
@@ -10,12 +11,13 @@ export default function TaskDetailPage() {
   const tasks = useDashboardStore((state) => state.tasks);
   const systemState = useDashboardStore((state) => state.systemState);
   const task = tasks.find((entry) => entry.id === params.id);
+  const t = useT();
 
   if (!task) {
     return (
       <Card>
-        <h1 className="text-2xl font-semibold">Task not found</h1>
-        <p className="mt-2 text-sm text-zinc-400">Wait for the next poll or return to the task board.</p>
+        <h1 className="text-2xl font-semibold">{t("tasks.notFound")}</h1>
+        <p className="mt-2 text-sm text-zinc-400">{t("taskDetail.notFoundDescription")}</p>
       </Card>
     );
   }

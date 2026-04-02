@@ -1,8 +1,12 @@
+"use client";
+
 import { AlertTriangle, BatteryWarning, Bug, Sparkles } from "lucide-react";
 import { CharacterState } from "@/lib/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils/formatters";
 import { stateMeta } from "@/components/character/CharacterStates";
+import { getCharacterStateLabel, useT } from "@/lib/i18n";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const CharacterIcon = ({ state }: { state: CharacterState }) => (
   <div className={cn("mascot relative mx-auto h-44 w-44", state)}>
@@ -43,22 +47,27 @@ const CharacterIcon = ({ state }: { state: CharacterState }) => (
 export const CharacterDisplay = ({
   state,
   compact = false,
-  title = "Operator Mascot",
+  title,
   subtitle
 }: {
   state: CharacterState;
   compact?: boolean;
   title?: string;
   subtitle?: string;
-}) => (
-  <Card className={cn("overflow-hidden", compact && "p-4")}>
-    <div className={cn("flex items-center gap-4", compact ? "flex-row" : "flex-col")}>
-      <CharacterIcon state={state} />
-      <div className={cn("space-y-2", compact ? "flex-1" : "text-center")}>
-        <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{title}</p>
-        <h3 className="text-xl font-semibold">{stateMeta[state].label}</h3>
-        <p className="text-sm text-zinc-400">{subtitle ?? "Mascot mood shifts with system health and task status."}</p>
+}) => {
+  const t = useT();
+  const locale = useSettingsStore((store) => store.locale);
+
+  return (
+    <Card className={cn("overflow-hidden", compact && "p-4")}>
+      <div className={cn("flex items-center gap-4", compact ? "flex-row" : "flex-col")}>
+        <CharacterIcon state={state} />
+        <div className={cn("space-y-2", compact ? "flex-1" : "text-center")}>
+          <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{title ?? t("mascot.status")}</p>
+          <h3 className="text-xl font-semibold">{getCharacterStateLabel(locale, state)}</h3>
+          <p className="text-sm text-zinc-400">{subtitle ?? t("mascot.description")}</p>
+        </div>
       </div>
-    </div>
-  </Card>
-);
+    </Card>
+  );
+};

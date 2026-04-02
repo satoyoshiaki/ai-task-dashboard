@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useDataPolling } from "@/lib/hooks/useDataPolling";
 import { useDashboardStore } from "@/stores/dashboardStore";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -7,11 +8,17 @@ import { Header } from "@/components/layout/Header";
 import { DemoModeBar } from "@/components/layout/DemoModeBar";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
 import { cn } from "@/lib/utils/formatters";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   useDataPolling();
   const usageStats = useDashboardStore((state) => state.usageStats);
+  const locale = useSettingsStore((state) => state.locale);
   const limited = usageStats.some((item) => item.status === "limit-reached");
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   return (
     <div className={cn("min-h-screen bg-grid-fade", limited && "dashboard-desaturated")}>

@@ -1,4 +1,7 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
+import { useT } from "@/lib/i18n";
 import { UsageStat } from "@/lib/types";
 import { providerLabel } from "@/lib/utils/formatters";
 
@@ -8,6 +11,7 @@ const chartPath = (values: number[]) => {
 };
 
 export const UsageChart = ({ usageStats }: { usageStats: UsageStat[] }) => {
+  const t = useT();
   const series = usageStats.map((stat) => ({
     ...stat,
     color: stat.provider === "claude-code" ? "#a78bfa" : "#38bdf8",
@@ -22,8 +26,8 @@ export const UsageChart = ({ usageStats }: { usageStats: UsageStat[] }) => {
   return (
     <Card>
       <div className="mb-4">
-        <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Usage Trend</p>
-        <h3 className="mt-2 text-xl font-semibold">Session drift over the last hour</h3>
+        <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{t("dashboard.usageTrend")}</p>
+        <h3 className="mt-2 text-xl font-semibold">{t("dashboard.usageTrendSubtitle")}</h3>
       </div>
       <svg viewBox="0 0 180 130" className="w-full">
         <line x1="0" y1="120" x2="180" y2="120" stroke="rgba(255,255,255,0.08)" />

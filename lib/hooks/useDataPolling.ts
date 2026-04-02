@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { buildSnapshot } from "@/lib/adapters";
+import { translate } from "@/lib/i18n";
 import { dashboardStore } from "@/stores/dashboardStore";
 import { notificationStore } from "@/stores/notificationStore";
 import { settingsStore, useSettingsStore } from "@/stores/settingsStore";
@@ -32,6 +33,7 @@ export const useDataPolling = () => {
     const poll = async () => {
       dashboardStore.setLoading(true);
       const settings = settingsStore.getState();
+      const { locale } = settings;
       const snapshot = await buildSnapshot(settings);
       if (!active) {
         return;
@@ -46,8 +48,8 @@ export const useDataPolling = () => {
       if (notificationsEnabled) {
         if (isCritical && !lastCriticalRef.current) {
           notificationStore.push({
-            title: "Usage limit reached",
-            detail: "One provider hit its session cap. Blocked tasks are highlighted.",
+            title: translate(locale, "toast.usageLimitReached"),
+            detail: translate(locale, "toast.usageLimitReachedMsg"),
             tone: "warning"
           });
         }
@@ -57,8 +59,8 @@ export const useDataPolling = () => {
           .slice(0, 1)
           .forEach((task) => {
             notificationStore.push({
-              title: `Task failed: ${task.id}`,
-              detail: task.errorMessage ?? "Unexpected task failure",
+              title: `${translate(locale, "toast.taskFailed")} ${task.id}`,
+              detail: task.errorMessage ?? translate(locale, "toast.unexpectedTaskFailure"),
               tone: "error"
             });
           });
@@ -66,8 +68,8 @@ export const useDataPolling = () => {
         completedIds.forEach((id) => {
           if (!lastCompletedIdsRef.current.has(id)) {
             notificationStore.push({
-              title: `Task complete: ${id}`,
-              detail: "The task finished successfully.",
+              title: `${translate(locale, "toast.taskComplete")} ${id}`,
+              detail: translate(locale, "toast.taskCompleteMsg"),
               tone: "success"
             });
           }

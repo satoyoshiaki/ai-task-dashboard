@@ -2,6 +2,7 @@
 
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { TaskModal } from "@/components/tasks/TaskModal";
+import { useT } from "@/lib/i18n";
 import { useTaskStore } from "@/stores/taskStore";
 
 export const TaskList = () => {
@@ -9,6 +10,7 @@ export const TaskList = () => {
   const activeStatus = useTaskStore((state) => state.activeStatus);
   const search = useTaskStore((state) => state.search.toLowerCase());
   const sortBy = useTaskStore((state) => state.sortBy);
+  const t = useT();
 
   const filtered = tasks
     .filter((task) => (activeStatus === "all" ? true : task.status === activeStatus))
@@ -25,7 +27,7 @@ export const TaskList = () => {
       <div className="space-y-4">
         {filtered.length === 0 ? (
           <div className="rounded-[28px] border border-dashed border-white/10 bg-black/10 p-10 text-center text-zinc-400">
-            No tasks match this view.
+            {t("tasks.notFound")}
           </div>
         ) : (
           filtered.map((task) => <TaskCard key={task.id} task={task} />)
