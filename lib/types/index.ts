@@ -69,6 +69,30 @@ export interface SystemState {
   currentMode: Mode;
 }
 
+export interface SystemResources {
+  cpu: {
+    usage: number;
+    cores: number;
+    model: string;
+    loadAvg: number[];
+  };
+  memory: {
+    total: number;
+    used: number;
+    free: number;
+    usagePercent: number;
+  };
+  storage: {
+    total: number;
+    used: number;
+    free: number;
+    usagePercent: number;
+  };
+  uptime: number;
+  platform: string;
+  timestamp: string;
+}
+
 export interface TaskFilter {
   status?: TaskStatus | "all";
   provider?: Provider | "all";
@@ -82,6 +106,7 @@ export interface DemoScenario {
   description: string;
   systemState: SystemState;
   usageStats: UsageStat[];
+  systemResources: SystemResources;
   taskMutator: (tasks: Task[]) => Task[];
 }
 
@@ -97,6 +122,7 @@ export interface IDataAdapter {
   getTasks(filter?: TaskFilter): Promise<Task[]>;
   getTask(id: string): Promise<Task | null>;
   getSystemState(): Promise<SystemState>;
+  getSystemResources(): Promise<SystemResources>;
 }
 
 export interface SettingsState {

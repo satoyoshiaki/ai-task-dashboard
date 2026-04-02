@@ -1,5 +1,5 @@
 import { addMinutes, addSeconds, subMinutes, subSeconds } from "date-fns";
-import { LogEntry, SystemState, Task, UsageStat } from "@/lib/types";
+import { LogEntry, SystemResources, SystemState, Task, UsageStat } from "@/lib/types";
 
 const now = new Date();
 
@@ -181,6 +181,30 @@ export const baseSystemState: SystemState = {
   currentMode: "mock"
 };
 
+export const baseSystemResources: SystemResources = {
+  cpu: {
+    usage: 45,
+    cores: 8,
+    model: "Mock Compute Cluster",
+    loadAvg: [1.9, 1.6, 1.2]
+  },
+  memory: {
+    total: 32 * 1024 ** 3,
+    used: Math.round(32 * 1024 ** 3 * 0.62),
+    free: 32 * 1024 ** 3 - Math.round(32 * 1024 ** 3 * 0.62),
+    usagePercent: 62
+  },
+  storage: {
+    total: 512 * 1024 ** 3,
+    used: Math.round(512 * 1024 ** 3 * 0.38),
+    free: 512 * 1024 ** 3 - Math.round(512 * 1024 ** 3 * 0.38),
+    usagePercent: 38
+  },
+  uptime: 3 * 86400 + 14 * 3600 + 26 * 60,
+  platform: "linux",
+  timestamp: now.toISOString()
+};
+
 export const baseRecentActivity = [
   {
     id: "activity-1",
@@ -218,3 +242,15 @@ export const cloneTasks = () =>
   }));
 
 export const cloneSystemState = () => ({ ...baseSystemState });
+
+export const cloneSystemResources = () => ({
+  cpu: {
+    ...baseSystemResources.cpu,
+    loadAvg: [...baseSystemResources.cpu.loadAvg]
+  },
+  memory: { ...baseSystemResources.memory },
+  storage: { ...baseSystemResources.storage },
+  uptime: baseSystemResources.uptime,
+  platform: baseSystemResources.platform,
+  timestamp: new Date().toISOString()
+});

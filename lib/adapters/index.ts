@@ -1,6 +1,6 @@
-import { applyScenarioUsage, demoScenarios } from "@/lib/mock/demoScenarios";
+import { applyScenarioUsage, demoScenarios, getScenarioSystemResources } from "@/lib/mock/demoScenarios";
 import { cloneSystemState, cloneTasks, cloneUsageStats } from "@/lib/mock/mockData";
-import { DashboardSnapshot, IDataAdapter, SettingsState, Task } from "@/lib/types";
+import { DashboardSnapshot, IDataAdapter, SettingsState, SystemResources, Task } from "@/lib/types";
 import { ClaudeCodeAdapter } from "@/lib/adapters/claudeCodeAdapter";
 import { CodexAdapter } from "@/lib/adapters/codexAdapter";
 import { MockAdapter } from "@/lib/adapters/mockAdapter";
@@ -41,6 +41,18 @@ export const buildSnapshot = async (settings: SettingsState): Promise<DashboardS
     systemState,
     recentActivity: [...tasks.flatMap((task) => task.logs)].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 6)
   };
+};
+
+export const buildSystemResources = async (settings: SettingsState): Promise<SystemResources> => {
+  if (settings.demoScenarioId !== "normal-operation") {
+    return getScenarioSystemResources(settings.demoScenarioId);
+  }
+
+  if (settings.dataSource === "mock") {
+    return adapters.mock.getSystemResources();
+  }
+
+  return adapters.mock.getSystemResources();
 };
 
 export const createBaseSnapshot = (): DashboardSnapshot => ({

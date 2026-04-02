@@ -1,5 +1,5 @@
 import { addMinutes, subMinutes } from "date-fns";
-import { DemoScenario, Task, UsageStat } from "@/lib/types";
+import { DemoScenario, SystemResources, Task, UsageStat } from "@/lib/types";
 
 const mutateTasks = (tasks: Task[], partial: Partial<Task>, statuses?: Task["status"][]) =>
   tasks.map((task, index) => {
@@ -21,6 +21,41 @@ const mapUsage = (usageStats: UsageStat[], updates: Partial<UsageStat>[]) =>
     ...updates[index]
   }));
 
+const createSystemResources = (cpu: number, memory: number, storage: number): SystemResources => {
+  const memoryTotal = 32 * 1024 ** 3;
+  const storageTotal = 512 * 1024 ** 3;
+  const memoryUsed = Math.round((memoryTotal * memory) / 100);
+  const storageUsed = Math.round((storageTotal * storage) / 100);
+
+  return {
+    cpu: {
+      usage: cpu,
+      cores: 8,
+      model: "Demo Compute Cluster",
+      loadAvg: [
+        Number((cpu / 24).toFixed(2)),
+        Number((cpu / 30).toFixed(2)),
+        Number((cpu / 36).toFixed(2))
+      ]
+    },
+    memory: {
+      total: memoryTotal,
+      used: memoryUsed,
+      free: memoryTotal - memoryUsed,
+      usagePercent: memory
+    },
+    storage: {
+      total: storageTotal,
+      used: storageUsed,
+      free: storageTotal - storageUsed,
+      usagePercent: storage
+    },
+    uptime: 4 * 86400 + 9 * 3600 + 12 * 60,
+    platform: "linux",
+    timestamp: new Date().toISOString()
+  };
+};
+
 export const demoScenarios: DemoScenario[] = [
   {
     id: "normal-operation",
@@ -36,6 +71,7 @@ export const demoScenarios: DemoScenario[] = [
       currentMode: "demo"
     },
     usageStats: [],
+    systemResources: createSystemResources(45, 62, 38),
     taskMutator: (tasks) => tasks
   },
   {
@@ -52,6 +88,7 @@ export const demoScenarios: DemoScenario[] = [
       currentMode: "demo"
     },
     usageStats: [],
+    systemResources: createSystemResources(92, 88, 55),
     taskMutator: (tasks) =>
       tasks.map((task, index) => ({
         ...task,
@@ -75,6 +112,7 @@ export const demoScenarios: DemoScenario[] = [
       currentMode: "demo"
     },
     usageStats: [],
+    systemResources: createSystemResources(78, 75, 60),
     taskMutator: (tasks) =>
       tasks.map((task, index) => ({
         ...task,
@@ -98,6 +136,7 @@ export const demoScenarios: DemoScenario[] = [
       currentMode: "demo"
     },
     usageStats: [],
+    systemResources: createSystemResources(85, 90, 65),
     taskMutator: (tasks) =>
       mutateTasks(tasks, { status: "error", errorMessage: "Upstream adapter timeout during response stream" }, [
         "running",
@@ -120,6 +159,7 @@ export const demoScenarios: DemoScenario[] = [
       currentMode: "demo"
     },
     usageStats: [],
+    systemResources: createSystemResources(8, 40, 38),
     taskMutator: (tasks) =>
       tasks.map((task, index) => ({
         ...task,
@@ -143,6 +183,7 @@ export const demoScenarios: DemoScenario[] = [
       currentMode: "demo"
     },
     usageStats: [],
+    systemResources: createSystemResources(20, 45, 38),
     taskMutator: (tasks) =>
       tasks.map((task, index) => ({
         ...task,
@@ -186,3 +227,20 @@ export const applyScenarioUsage = (scenarioId: string, usageStats: UsageStat[]) 
       return usageStats;
   }
 };
+
+export const getScenarioSystemResources = (scenarioId: string) =>
+  (() => {
+    const resources = demoScenarios.find((scenario) => scenario.id === scenarioId)?.systemResources ?? createSystemResources(45, 62, 38);
+
+    return {
+      cpu: {
+        ...resources.cpu,
+        loadAvg: [...resources.cpu.loadAvg]
+      },
+      memory: { ...resources.memory },
+      storage: { ...resources.storage },
+      uptime: resources.uptime,
+      platform: resources.platform,
+      timestamp: new Date().toISOString()
+    };
+  })();

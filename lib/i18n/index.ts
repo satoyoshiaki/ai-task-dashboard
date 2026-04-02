@@ -128,7 +128,17 @@ const translations = {
     "tasks.openQuickDetail": "ボードを離れずにクイック詳細を開けます。",
     "dashboard.usageTrend": "使用量の推移",
     "dashboard.usageTrendSubtitle": "直近1時間のセッション変動",
-    "tasks.sortUsage": "使用量順"
+    "tasks.sortUsage": "使用量順",
+    "System Resources": "システムリソース",
+    "CPU Usage": "CPU使用率",
+    "Memory Usage": "メモリ使用率",
+    "Storage Usage": "ストレージ使用率",
+    "Uptime": "稼働時間",
+    "Load Average": "ロードアベレージ",
+    "cores": "コア",
+    "days": "日",
+    "hours": "時間",
+    "minutes": "分"
   },
   en: {
     "nav.dashboard": "Dashboard",
@@ -254,7 +264,17 @@ const translations = {
     "tasks.openQuickDetail": "Open quick detail views without leaving the board.",
     "dashboard.usageTrend": "Usage Trend",
     "dashboard.usageTrendSubtitle": "Session drift over the last hour",
-    "tasks.sortUsage": "Sort by usage"
+    "tasks.sortUsage": "Sort by usage",
+    "System Resources": "System Resources",
+    "CPU Usage": "CPU Usage",
+    "Memory Usage": "Memory Usage",
+    "Storage Usage": "Storage Usage",
+    "Uptime": "Uptime",
+    "Load Average": "Load Average",
+    "cores": "cores",
+    "days": "days",
+    "hours": "hours",
+    "minutes": "minutes"
   }
 } as const;
 

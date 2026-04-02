@@ -3,6 +3,7 @@
 import { UsageCard } from "@/components/dashboard/UsageCard";
 import { StatsOverview } from "@/components/dashboard/StatsOverview";
 import { UsageChart } from "@/components/dashboard/UsageChart";
+import { SystemResourcesCard } from "@/components/dashboard/SystemResourcesCard";
 import { CharacterDisplay } from "@/components/character/CharacterDisplay";
 import { resolveCharacterState } from "@/components/character/CharacterContext";
 import { Card } from "@/components/ui/card";
@@ -52,6 +53,7 @@ export default function DashboardPage() {
           ))}
         </div>
       </Card>
+      <SystemResourcesCard />
     </div>
   );
 }
