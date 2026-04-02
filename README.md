@@ -1,5 +1,18 @@
 # AI Task Dashboard
 
+## スクリーンショット
+
+### ダッシュボード
+![ダッシュボード](public/screenshots/dashboard.png)
+
+### タスク一覧
+![タスク一覧](public/screenshots/tasks.png)
+
+### 設定画面
+![設定画面](public/screenshots/settings.png)
+
+---
+
 Claude Code と Codex のタスク状況・使用率・キャラクターアニメーションを一画面で確認できる、ダークモードの Next.js ダッシュボードです。
 
 ## 技術スタック
