@@ -1,81 +1,101 @@
 # AI Task Dashboard
 
-Dark-mode Next.js dashboard for monitoring Claude Code and Codex task usage, queue health, demo scenarios, and mascot reactions.
+Claude Code と Codex のタスク状況・使用率・キャラクターアニメーションを一画面で確認できる、ダークモードの Next.js ダッシュボードです。
 
-## Stack
+## 技術スタック
 
 - Next.js 14 App Router
 - TypeScript
 - Tailwind CSS
-- Local shadcn-style UI primitives
+- shadcn スタイルの UI コンポーネント
 - date-fns
 - Lucide icons
-- Custom persisted stores and polling layer
+- カスタムストア・ポーリング層
 
-## Run
+## 起動方法
 
 ```bash
 cd /home/sato-fox/codex/ai-task-dashboard
 npm run dev
 ```
 
-The project is nested inside `/home/sato-fox/codex`, so the npm scripts intentionally call the parent workspace `next` binary.
+## 画面一覧
 
-## Pages
+| パス | 説明 |
+|------|------|
+| `/` | ダッシュボード概要 |
+| `/tasks` | タスク一覧（フィルタ・クイックビュー付き）|
+| `/tasks/[id]` | タスク詳細 |
+| `/settings` | 設定画面 |
 
-- `/` dashboard overview
-- `/tasks` task board with filters and quick-view modal
-- `/tasks/[id]` task detail
-- `/settings` dashboard settings
+## デモシナリオ
 
-## Demo Scenarios
+画面上部のデモバーからシナリオを切り替えられます。
 
-Use the top demo bar to swap between:
+| シナリオ | 内容 |
+|----------|------|
+| Normal Operation | 通常稼働状態 |
+| High Load | 高負荷状態 |
+| Limit Reached | 制限到達・キャラクターが力尽きる |
+| Error Storm | エラー多発状態 |
+| Quiet Night | 深夜の静かな状態 |
+| All Complete Party | 全タスク完了お祝い状態 |
 
-- Normal Operation
-- High Load
-- Limit Reached
-- Error Storm
-- Quiet Night
-- All Complete Party
+各シナリオは、システム状態・タスクステータス・使用率を一括で上書きします。
 
-Each scenario overrides system state, task statuses, and usage pressure.
+## データアダプター
 
-## Data Adapters
+アダプターの登録は [`lib/adapters/index.ts`](lib/adapters/index.ts) で管理しています。
 
-Adapter registration lives in [lib/adapters/index.ts](/home/sato-fox/codex/ai-task-dashboard/lib/adapters/index.ts).
+| アダプター | 説明 |
+|------------|------|
+| `mockAdapter` | リアルな遅延付きのモックデータを返す |
+| `claudeCodeAdapter` | ローカルファイルを読もうとし、失敗時はモックにフォールバック |
+| `codexAdapter` | 同上（Codex 向け） |
 
-- `mockAdapter` provides realistic delayed data.
-- `claudeCodeAdapter` and `codexAdapter` attempt local file reads first and fall back to mock data.
-- To swap to a real source, replace the placeholder file-read logic in the provider adapter and keep the `IDataAdapter` contract stable.
+実データに差し替える場合は、プロバイダーアダプター内のファイル読み込みロジックを置き換えるだけです。`IDataAdapter` インターフェースさえ守れば他のコードは変更不要です。
 
-## Persistence
+## 設定の永続化
 
-Settings persist in localStorage through the custom store in [stores/settingsStore.ts](/home/sato-fox/codex/ai-task-dashboard/stores/settingsStore.ts).
+設定は [`stores/settingsStore.ts`](stores/settingsStore.ts) を通じて localStorage に保存されます。
 
-Persisted fields:
+保存される項目:
+- データソース
+- ポーリング間隔
+- タイムゾーン
+- テーマ
+- アニメーションのON/OFF
+- 通知のON/OFF
+- デモシナリオ
 
-- data source
-- polling interval
-- timezone
-- theme
-- animations toggle
-- notifications toggle
-- demo scenario
+## キャラクター
 
-## Notes
+キャラクターの SVG と状態マッピングは以下のファイルにあります。
 
-- Mock data lives in [lib/mock/mockData.ts](/home/sato-fox/codex/ai-task-dashboard/lib/mock/mockData.ts).
-- Demo scenario overrides live in [lib/mock/demoScenarios.ts](/home/sato-fox/codex/ai-task-dashboard/lib/mock/demoScenarios.ts).
-- Polling is driven by [lib/hooks/useDataPolling.ts](/home/sato-fox/codex/ai-task-dashboard/lib/hooks/useDataPolling.ts).
-- The mascot SVG and state mapping live in [components/character/CharacterDisplay.tsx](/home/sato-fox/codex/ai-task-dashboard/components/character/CharacterDisplay.tsx) and [components/character/CharacterContext.tsx](/home/sato-fox/codex/ai-task-dashboard/components/character/CharacterContext.tsx).
+- [`components/character/CharacterDisplay.tsx`](components/character/CharacterDisplay.tsx)
+- [`components/character/CharacterContext.tsx`](components/character/CharacterContext.tsx)
 
-## Verification
+| 状態 | アニメーション |
+|------|--------------|
+| idle | ふわふわ待機・瞬き |
+| working | タイピング・左右に動く |
+| completed | ジャンプ・キラキラ演出 |
+| warning | 震える・汗マーク |
+| limit-reached | 力尽きて倒れる・電池切れ |
+| error | しょんぼり・バグアイコン |
 
-Run:
+## モックデータ・デモ
+
+- モックデータ: [`lib/mock/mockData.ts`](lib/mock/mockData.ts)
+- デモシナリオ: [`lib/mock/demoScenarios.ts`](lib/mock/demoScenarios.ts)
+- ポーリング: [`lib/hooks/useDataPolling.ts`](lib/hooks/useDataPolling.ts)
+
+## ビルド確認
 
 ```bash
 npm run build
 ```
 
-If you want live provider data, add local adapter inputs under `ai-task-dashboard/data/` and update the provider adapters to parse those files or local APIs.
+## 実データ接続について
+
+ライブデータを使いたい場合は、`ai-task-dashboard/data/` 以下にローカルアダプター用のファイルを置き、各プロバイダーアダプターがそのファイルや API を参照するように更新してください。
