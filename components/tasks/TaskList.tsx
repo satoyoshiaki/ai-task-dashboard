@@ -3,24 +3,18 @@
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { TaskModal } from "@/components/tasks/TaskModal";
 import { useT } from "@/lib/i18n";
+import { filterTasks } from "@/lib/tasks/filterTasks";
 import { useTaskStore } from "@/stores/taskStore";
 
 export const TaskList = () => {
   const tasks = useTaskStore((state) => state.tasks);
   const activeStatus = useTaskStore((state) => state.activeStatus);
-  const search = useTaskStore((state) => state.search.toLowerCase());
+  const provider = useTaskStore((state) => state.provider);
+  const search = useTaskStore((state) => state.search);
   const sortBy = useTaskStore((state) => state.sortBy);
   const t = useT();
 
-  const filtered = tasks
-    .filter((task) => (activeStatus === "all" ? true : task.status === activeStatus))
-    .filter((task) => `${task.id} ${task.title}`.toLowerCase().includes(search))
-    .sort((a, b) => {
-      if (sortBy === "progress" || sortBy === "usageImpact") {
-        return b[sortBy] - a[sortBy];
-      }
-      return b[sortBy].getTime() - a[sortBy].getTime();
-    });
+  const filtered = filterTasks({ tasks, activeStatus, provider, search, sortBy });
 
   return (
     <>
